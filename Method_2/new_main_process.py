@@ -137,15 +137,8 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
     #Segment image into lines & words
     components = connected_components(edges,file)
 
-    # line_coords = GMM_line_segmentation(no_noise, components, scale_percent,page_image, file, path)  # GMM LINE SEGMENTATION METHOD
-
     line_coords = line_segmentation(no_noise, components, scale_percent, page_image, file) # MY LINE SEGMENTATION METHOD
     word_coords = word_segmentation(line_coords, no_noise, file, min_gap) # MY WORD SEGMENTATION
-
-    # line_components = lineClustering.line_clustering(components,file,path)
-    # lines, line_coords = words.get_words_in_line(page_image,no_noise, components, line_components,file, min_gap, scale_percent)
-
-
 
     lines_image = page_image.copy()
     words_image = page_image.copy()
@@ -160,29 +153,12 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
     for i,line in enumerate(line_coords):
         line_image = page_image.copy()
         cropped_line = line_image[int(line[2]):int(line[3]), int(line[0]):int(line[1])]
-    #     line_images.append(cropped_line)
         cv2.rectangle(lines_image, (int(line[0]),int(line[2])), (int(line[1]),int(line[3])),(0,255,0),4)
         cv2.rectangle(line_word_image, (int(line[0]),int(line[2])), (int(line[1]),int(line[3])),(255,0,0),4)
         cv2.imwrite('results/{}/lines/line{}.png'.format(file,i+1),cv2.cvtColor(cropped_line,cv2.COLOR_BGR2RGB))    
-        # if (os.path.exists('./results/{}/lines/line{}'.format(file,i+1))) == False:
-    #         os.mkdir('./results/{}/lines/line{}'.format(file,i+1))
+        if (os.path.exists('./results/{}/lines/line{}'.format(file,i+1))) == False:
+            os.mkdir('./results/{}/lines/line{}'.format(file,i+1))
         line_Ys.append(int(abs((line[3]+line[2])/2)))
-    # for i,line_ob in enumerate(lines):
-    #     # if line_coords[i][0] == 'new':
-    #     #     line_no += 1
-    #     # if line_coords[i][0] != 'new':
-    #     #     avg_y = 0
-    #     for j, word in enumerate(line_ob.words):
-    #         cv2.rectangle(words_image, (int(word.left),int(word.top)), (int(word.right), int(word.bottom)), (0,255,0),4)
-    #         cv2.rectangle(line_word_image, (int(word.left),int(word.top)), (int(word.right), int(word.bottom)), (0,255,0),4)
-    #         word_pos = [int(word.left),int(word.right), int(word.top), int(word.bottom)]
-    #         word_y = int((int(word.top)+int(word.bottom)) / 2)
-    #         min_y_line = line_Ys.index(min(line_Ys, key=lambda x:abs(x-word_y))) + 1
-    #         word_coords.append([min_y_line,word_pos])
-    #         # if line_coords[i][0] != 'new':
-    #         #     avg_y += (word.bottom+word.top)/2
-    #     # if line_coords[i][0] != 'new':
-    #     #     line_Ys.append(avg_y/len(line_ob.words))
 
     for coord in word_coords:
         cv2.rectangle(words_image, (coord[1][0],coord[1][2]),(coord[1][1],coord[1][3]),(0,255,0),2)
@@ -222,11 +198,8 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                     inside_areas.append((prev_box[1][1]-prev_box[1][0])*(prev_box[1][3]-prev_box[1][2]))
                     inside_inds.append(ind)
             if inside_inds != []:
-                # print('inside_inds: ', inside_inds)
-                # print('inside_areas:', inside_areas)
                 if len(inside_areas) > 1:
                     selected_inside_val = inside_areas.index(min(inside_areas))
-                    # print('selected_inside_val: ', selected_inside_val)
                     selected_inside_ind = inside_inds[selected_inside_val]
                     del word_coords[selected_inside_ind]
                 else:
@@ -442,7 +415,6 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
 
                 align_dict = {}
                 # -------------DISTANCE SIMILARITY ALIGNMENT / IOU overlap ALIGNMENT------
-                # testttt = page_image.copy()
                 for word in ground_truth_coords:
                     coord_dist = []
                     overlaps = []
@@ -451,29 +423,8 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                         overlaps.append(overlap)
                     if sum(overlaps) == 0:
                         continue
-                    # print('overlaps: ', overlaps)
-                    # print('word: ',word[0])
                     max_overlap_index = overlaps.index(max(overlaps))
-                    # if word[0] == '12':
-                    #     print('12 ious: ', overlaps)
-                    #     cv2.rectangle(testttt, (word_coords[max_overlap_index][1][0],word_coords[max_overlap_index][1][2]),(word_coords[max_overlap_index][1][1],word_coords[max_overlap_index][1][3]),(0,255,0),2)
-                    #     cv2.rectangle(testttt, (word[1],word[3]),(word[2],word[4]),(255,0,0),2)
-                    #     plt.imshow(testttt,cmap='gray')
-                    #     plt.show()
-                    # print('gt coords: ', word[1],word[2],word[3],word[4])
-                    # print('pred coords: ', word_coords[max_overlap_index])
-                    #     x1_diff = abs(pred_word[1][0]-word[1])**2
-                    #     x2_diff = abs(pred_word[1][1]-word[2])**2
-                    #     y1_diff = abs(pred_word[1][2]-word[3])**2
-                    #     y2_diff = abs(pred_word[1][3]-word[4])**2
-                    #     p1_dist = np.sqrt(x1_diff+y1_diff)
-                    #     p2_dist = np.sqrt(x2_diff+y2_diff)
-                    #     p3_dist = np.sqrt(x1_diff+y2_diff)
-                    #     p4_dist = np.sqrt(x2_diff+y1_diff)
-                    #     coord_dist.append([p1_dist, p2_dist, p3_dist, p4_dist])
-                    # min_coord_dist = (min(coord_dist, key=sum))
-                    # min_coord_ind = coord_dist.index(min_coord_dist)
-                    # print('word_coords[min_coord_ind]:',word_coords[min_coord_ind])
+
                     if word[0] in align_dict:
                         align_dict[word[0]].append(word_coords[max_overlap_index][0])
                         align_dict[word[0]].append(word_coords[max_overlap_index][1].copy())
@@ -495,10 +446,8 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                 continue
             if ground_truth_words != None:
                 no_gt_words = 0
-                # print('ground_truth_words: ',ground_truth_words)
                 for listElem in ground_truth_words:
                     no_gt_words += len(listElem)  
-                # print('Ground-truth number of words: ',no_gt_words)
                 try:
                     align_dict = {}
                     for i,line in enumerate(line_coords):
@@ -507,14 +456,9 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                             if word[0] == i+1:
                                 line_word_boxes.append(word)
                         line_word_boxes.sort(key = lambda x: x[1])
-                        # print('line_word_boxes ', i+1, ': ',line_word_boxes)
                         for j,word in enumerate(line_word_boxes):
-                                # print('j: ', j)
                                 line_number = word[0] - 1
-                                # print('line number: ', line_number)
                                 key_word = ground_truth_words[line_number][j]
-                                # print('line_number:',line_number,' j:',j)
-                                # print('ground_truth_words[line_number][j]: ', ground_truth_words[line_number][j])
                                 if key_word in align_dict:
                                     align_dict[key_word] += word
                                 else:
@@ -559,7 +503,7 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                         pass
             break
 
-    print('ALIGN DICT: ',align_dict)
+    # print('ALIGN DICT: ',align_dict)
 
 
     try:
@@ -580,10 +524,7 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
             p2 = np.array([[[box[2], box[4]]]], dtype=np.float32)
             new_p1 = cv2.perspectiveTransform(p1, M)
             new_p2 = cv2.perspectiveTransform(p2, M)
-            # print('new_p1: ',new_p1)
-            # print('new_p2: ',new_p2)
             new_box = [box[0],int(new_p1[0][0][0]),int(new_p2[0][0][0]),int(new_p1[0][0][1]),int(new_p2[0][0][1])]
-            # print('new_box: ', new_box)
             ground_truth_coords[i] = new_box
 
     except:
@@ -591,7 +532,7 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
         print('Can not calculate IOU metric, no bounding box coordinates found.')
     if ground_truth_coords != None:
         mean_iou = iou_metric(align_dict, ground_truth_coords)
-        print('mean IOU = ', mean_iou)
+        # print('mean IOU = ', mean_iou)
 
 
     # Create annotated image
@@ -603,20 +544,16 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
     annotated_image_temp = page_image.copy()
     pil_image = Image.fromarray(cv2.cvtColor(annotated_image_temp, cv2.COLOR_BGR2RGB))
     pil_image2 = Image.fromarray(cv2.cvtColor(annotated_image_temp, cv2.COLOR_BGR2RGB))
-    # pil_image2 = Image.fromarray(cv2.cvtColor(annotated_segmented_image_temp, cv2.COLOR_BGR2RGB))
     font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 50)
     draw_image = ImageDraw.Draw(pil_image)
     draw_image2 = ImageDraw.Draw(pil_image2)
     visited = []
     for key,val in align_dict.items():
-            # print('val: ', val)
             if len(val) == 2:
                 if val[1] in visited:
-                    # cv2.putText(annotated_image, key, (val[1][0]+250,val[1][2]), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0),2,cv2.LINE_AA)
                     draw_image.text((val[1][0],val[1][2]), key, font=font,fill=(255, 0, 0))
                     draw_image2.text((val[1][0],val[1][2]), key, font=font,fill=(255, 0, 0))
                 else:
-                    # cv2.putText(annotated_image, key, (val[1][0],val[1][2]), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0),2,cv2.LINE_AA)
                     draw_image.text((val[1][0],val[1][2]), key, font=font,fill=(255, 0, 0))
                     draw_image2.text((val[1][0],val[1][2]), key, font=font,fill=(255, 0, 0))
                     draw_image2.rectangle([(val[1][0],val[1][2]), (val[1][1],val[1][3])], outline="#00ff00",width=3)
@@ -625,13 +562,10 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
                 for coord in val:
                     if type(coord) == list:
                         if coord in visited:
-                            # cv2.putText(annotated_image, key, (coord[0]+250,coord[2]), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0),2,cv2.LINE_AA)
                             draw_image.text((coord[0],coord[2]), key, font=font,fill=(255, 0, 0))
                             draw_image2.text((coord[0],coord[2]), key, font=font,fill=(255, 0, 0))
-                            # draw_image2.rectangle([(coord[0],coord[2]), (coord[1],coord[3])], outline="#00ff00", width=3)
 
                         else:
-                            # cv2.putText(annotated_image, key, (coord[0],coord[2]), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,0),2,cv2.LINE_AA)
                             draw_image.text((coord[0],coord[2]), key, font=font,fill=(255, 0, 0))
                             draw_image2.text((coord[0],coord[2]), key, font=font,fill=(255, 0, 0))
                             draw_image2.rectangle([(coord[0],coord[2]), (coord[1],coord[3])], outline="#00ff00", width=3)
@@ -703,16 +637,12 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
         coli = 0
         # Transform gt_coords to page_image coords
         for i,box in enumerate(ground_truth_coords):  
-            # print('box: ', box)
             cv2.rectangle(gt_orig_img, (box[1],box[3]), (box[2],box[4]),colors[coli],2)
             p1 = np.array([[[box[1], box[3]]]], dtype=np.float32)
             p2 = np.array([[[box[2], box[4]]]], dtype=np.float32)
             new_p1 = cv2.perspectiveTransform(p1, M)
             new_p2 = cv2.perspectiveTransform(p2, M)
-            # print('new_p1: ',new_p1)
-            # print('new_p2: ',new_p2)
             new_box = [box[0],int(new_p1[0][0][0]),int(new_p2[0][0][0]),int(new_p1[0][0][1]),int(new_p2[0][0][1])]
-            # print('new_box: ', new_box)
             ground_truth_coords[i] = new_box
             cv2.rectangle(gt_words_img, (new_box[1],new_box[3]), (new_box[2],new_box[4]),colors[coli],2)
             cv2.rectangle(gt_boxes_img, (new_box[1],new_box[3]), (new_box[2],new_box[4]),colors[coli],2)
@@ -728,9 +658,11 @@ def method_2(path,file,read_params,holes,transcribe_or_gt,pre_t1,min_gap):
         cv2.imwrite('results/{}/gt_boxes_img.png'.format(file), gt_boxes_img)
 
     shape = page_image.shape
+
     # save xml file of alignment
     xml_file = xml_output(align_dict,no_of_lines,shape)
     with open("./results/{}/{}.xml".format(file,file), "w",encoding="utf8") as f:
         f.write(xml_file)
 
-    print('no of align boxes: ', len(align_visited_boxes))
+    # print('no of align boxes: ', len(align_visited_boxes))
+    print('Done, result can be found in "results/{}".'.format(file))

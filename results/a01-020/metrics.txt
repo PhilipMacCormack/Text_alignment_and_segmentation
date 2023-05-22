@@ -1,0 +1,11 @@
+file: a01-020 
+Method: 2 
+t1: 211 
+min_gap: 30 
+No lines: 9 
+No seg boxes: 63 
+No align boxes: 63  
+No aligned words (alignment): 65 
+No. GT words: 68 
+Alignment method: Box coordinate based 
+Mean IOU: 0,917037

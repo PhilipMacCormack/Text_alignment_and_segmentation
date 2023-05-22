@@ -44,13 +44,13 @@ def iam_word_bb_coords(path,file):
                 y = int(string['cmp']['@y'])
                 x = int(string['cmp']['@x'])
                 content = string['@text']
-                print(content)
-                print(string['cmp'])
+                # print(content)
+                # print(string['cmp'])
 
                 word_coords.append([content, x, x+width, y, y+height])
             if type(string['cmp']) is list:
                 content = string['@text']
-                print(content)
+                # print(content)
                 x1_list = []
                 x2_list = []
                 y1_list = []
@@ -60,7 +60,7 @@ def iam_word_bb_coords(path,file):
                     x2_list.append(int(dictt['@x'])+int(dictt['@width']))
                     y1_list.append(int(dictt['@y']))
                     y2_list.append(int(dictt['@y'])+int(dictt['@height']))
-                    print(dictt)
+                    # print(dictt)
                 x1 = min(x1_list)
                 x2 = max(x2_list)
                 y1 = min(y1_list)

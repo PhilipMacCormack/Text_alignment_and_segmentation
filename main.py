@@ -37,10 +37,10 @@ holes = True
 transcribe_or_gt = None
 
 # Pre decide what value you want the slider for setting t1 to be
-pre_t1 = 220
+pre_t1 = 211
 
 # Pre decide what value you want the slider for setting min_gap to be in method 1, if method 2 this acts as the definite value
-min_gap = 27
+min_gap = 30
 
 # -------------------------------------------------------------------------------------------------------------------------------
 

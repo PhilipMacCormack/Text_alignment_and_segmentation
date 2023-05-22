@@ -37,7 +37,7 @@ def iou_metric(align_dict, gt_coords):
                 # print(gt_word[0],' bb2: ', bb2)
                 iou = get_iou(bb1, bb2)
                 lenn += 1
-                print(word[0],' iou=', iou)
+                # print(word[0],' iou=', iou)
                 IOUS.append(iou)
                 gt_coords.remove(gt_word)
                 break
@@ -45,7 +45,7 @@ def iou_metric(align_dict, gt_coords):
                 # print('word: ', word[0])
                 # print('gt_word: ', gt_word[0])
     # print('lenn: ',lenn)
-    print('ious:', IOUS)
+    # print('ious:', IOUS)
     return sum(IOUS)/len(IOUS)
 
 # print(iou_metric(align_dict, gt_coords))
