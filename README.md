@@ -21,7 +21,7 @@ https://www.overleaf.com/project/63c523e1bc389181760c12e3
 ```
 
 ## Output
-The output from the algorithm can be found in ```Text_alignment_and_segmentation/Results```. The output consists of several saved images from the process as well as an xml file containing the final alignment of the document. Individual line, and word images from the segmentation can also be found, in ```results/{file}/lines```.
+The output from the algorithm can be found in ```Text_alignment_and_segmentation/Results/{file}```. The output consists of several saved images from the process as well as an xml file containing the final alignment of the document. Individual line, and word images from the segmentation can also be found, in ```results/{file}/lines```.
 
 
 ## References
