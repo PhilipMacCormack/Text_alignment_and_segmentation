@@ -1,12 +1,7 @@
-import sys
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import cv2
 import os
-from bs4 import BeautifulSoup
-from hmmlearn import hmm
-import sklearn
 
 from utils import *
 import math

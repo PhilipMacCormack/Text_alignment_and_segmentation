@@ -1,5 +1,4 @@
 import xmltodict
-import os
 
 def alignment_read(file):
     with open('results/{}/alto/{}.xml'.format(file,file),'r',encoding='utf8') as f:
