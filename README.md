@@ -22,6 +22,7 @@ To be able to run the pipeline in its entirety, see ```requirements.txt``` for r
 ```
 > python main.py
 ```
+* Follow the procedure from the terminal until finish
 
 ## Output
 The output from the algorithm can be found in ```Text_alignment_and_segmentation/Results/{file}```. The output consists of several saved images from the process as well as an xml file containing the final alignment of the document. Individual line, and word images from the segmentation can also be found, in ```results/{file}/lines```.
